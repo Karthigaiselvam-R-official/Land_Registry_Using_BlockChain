@@ -1,6 +1,6 @@
 Land_Registry_Using_Blockchain
 
-prerequisite:
+prerequirements:
 
 1.Node.js
 
