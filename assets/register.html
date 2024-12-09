@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar menu With Sub-menus | Using HTML, CSS & JQuery</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../css/login-form.css">
+    <link rel="stylesheet" href="../css/demo.css">
+  </head>
+  <body>
+    <div class="menu-btn">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="side-bar">
+      <div class="close-btn">
+        <i class="fas fa-times"></i>
+      </div>
+      <div class="menu">
+        <div class="item"><a href="#"><i class="fas fa-desktop"></i>Dashboard</a></div>
+        <div class="item">
+          <a class="sub-btn"><i class="fas fa-table"></i>Register<i class="fas fa-angle-right dropdown"></i></a>
+          <div class="sub-menu">
+            <a href="#" class="sub-item" onclick="register_fun()">Users</a>
+            <a href="#" class="sub-item" onclick="register_fun_asset()">Assets</a>
+          </div>
+        </div>
+        <div class="item"><a href="search.html"><i class="fas fa-th"></i>Search</a></div>
+        <div class="item"><a href="Mutation.html"><i class="fa fa-clipboard"></i>Mutation</a></div>
+        <div class="item"><a href="datasheet.html"><i class="fa fa-database"></i>Records</a></div>
+        <div class="item"><a href="Khatiyan.html"><i class="fa fa-database"></i>Vendor List</a></div>
+        <div class="item">
+          <a class="sub-btn"><i class="fas fa-cogs"></i>Settings<i class="fas fa-angle-right dropdown"></i></a>
+          <div class="sub-menu">
+            <a href="#" class="sub-item">User Profile</a>
+            <a href="#" class="sub-item">Land Data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <section class="main">
+      <div id="register" style="display: none;">
+        <section class="cm-login">
+          <center><p id="demo">Welcome to Land Registry User Enrollment Portal</p></center>
+          <form class="cm-login-form" onsubmit="return false">
+            <fieldset>
+              <center><legend>User Register</legend></center>
+              <input type="text" id="account_no" class="cm-text-input" placeholder="Account No">
+              <input type="text" id="name" class="cm-text-input" placeholder="Name">
+              <input type="text" id="Gender" class="cm-text-input" placeholder="Gender">
+              <input type="text" id="Address" class="cm-text-input" placeholder="Address">
+              <input type="text" id="phone" class="cm-text-input" placeholder="Contact No">
+              <input type="text" id="password" class="cm-text-input" placeholder="Password">
+            </fieldset>
+            <button type="submit" class="cm-submit2" onclick="createaccount()">Create Profile</button>
+          </form>
+        </section>
+      </div>
+
+      <div id="register_asset" style="display: none;">
+        <section class="cm-login">
+          <center><p id="demo">Welcome to Assets Enrollment Portal</p></center>
+          <form class="cm-login-form" onsubmit="return false">
+            <fieldset>
+              <center><legend>Asset Register</legend></center>
+              <input type="text" id="account_no_asset" class="cm-text-input" placeholder="Account No">
+              <input type="text" id="Location" class="cm-text-input" placeholder="Location">
+              <input type="text" id="District" class="cm-text-input" placeholder="District">
+              <input type="text" id="Plot_no" class="cm-text-input" placeholder="Plot No">
+              <input type="text" id="Area" class="cm-text-input" placeholder="Area (in sqft)">
+              <input type="text" id="Asset_value" class="cm-text-input" placeholder="Asset Value">
+            </fieldset>
+            <button type="submit" class="cm-submit2" onclick="create_asset()">Register Asset</button>
+          </form>
+        </section>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="../app.js"></script>
+    <script>
+      const contractAddress = "0xF9C9F0b36B5025b086Acd93Ff2Dc2b2C8B5F783f"; // Replace with your contract address
+      const contractABI = [ // Replace this with your actual ABI
+        {
+          "inputs": [
+            { "internalType": "string", "name": "_account", "type": "string" },
+            { "internalType": "string", "name": "_name", "type": "string" },
+            { "internalType": "string", "name": "_gender", "type": "string" },
+            { "internalType": "string", "name": "_address", "type": "string" },
+            { "internalType": "string", "name": "_phone", "type": "string" },
+            { "internalType": "string", "name": "_password", "type": "string" }
+          ],
+          "name": "add_user",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "string", "name": "_account", "type": "string" },
+            { "internalType": "string", "name": "_location", "type": "string" },
+            { "internalType": "string", "name": "_district", "type": "string" },
+            { "internalType": "string", "name": "_plot", "type": "string" },
+            { "internalType": "string", "name": "_area", "type": "string" },
+            { "internalType": "string", "name": "_assetValue", "type": "string" }
+          ],
+          "name": "add_asset",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ];
+
+      const web3 = new Web3(window.ethereum);
+      const storage = new web3.eth.Contract(contractABI, contractAddress);
+
+      $(document).ready(function() {
+        $('.sub-btn').click(function() {
+          $(this).next('.sub-menu').slideToggle();
+          $(this).find('.dropdown').toggleClass('rotate');
+        });
+
+        $('.menu-btn').click(function() {
+          $('.side-bar').addClass('active');
+          $('.menu-btn').css("visibility", "hidden");
+        });
+
+        $('.close-btn').click(function() {
+          $('.side-bar').removeClass('active');
+          $('.menu-btn').css("visibility", "visible");
+        });
+      });
+
+      function register_fun() {
+        $('#register_asset').hide();
+        $('#register').show();
+      }
+
+      function register_fun_asset() {
+        $('#register').hide();
+        $('#register_asset').show();
+      }
+
+      async function createaccount() {
+        const account = $("#account_no").val();
+        const name = $("#name").val();
+        const gender = $("#Gender").val();
+        const address = $("#Address").val();
+        const phone = $("#phone").val();
+        const password = $("#password").val();
+
+        await storage.methods.add_user(account, name, gender, address, phone, password).send({
+          from: account,
+          gas: 4700000,
+          gasPrice: '2000000000'
+        });
+      }
+
+      async function create_asset() {
+        const account = $("#account_no_asset").val();
+        const location = $("#Location").val();
+        const district = $("#District").val();
+        const plot = $("#Plot_no").val();
+        const area = $("#Area").val();
+        const assetValue = $("#Asset_value").val();
+
+        await storage.methods.add_asset(account, location, district, plot, area, assetValue).send({
+          from: account,
+          gas: 4700000,
+          gasPrice: '2000000000'
+        });
+      }
+    </script>
+  </body>
+</html>
